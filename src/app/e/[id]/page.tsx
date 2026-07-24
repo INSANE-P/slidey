@@ -181,18 +181,18 @@ export default function EditorPage() {
   };
 
   return (
-    // 슬라이드를 보면서 고치는 화면이라 좁은 폭에서는 접지 않고 가로로 넘겨요.
-    <div className="flex h-dvh min-w-[1120px] flex-col bg-surface">
-      <header className="flex flex-none items-center gap-3 border-b border-border bg-bg px-4 py-2.5">
+    // 데스크톱은 3단(썸네일·미리보기·폼), 모바일은 세로 스택(미리보기·썸네일 스트립·폼)으로 리플로우해요.
+    <div className="flex h-dvh flex-col bg-surface lg:min-w-[1120px]">
+      <header className="flex flex-none items-center gap-2 border-b border-border bg-bg px-3 py-2.5 sm:gap-3 sm:px-4">
         <Wordmark href="/" size="sm" className="flex-none" />
         <input
           value={deck.title}
           onChange={(e) => update({ ...deck, title: e.target.value })}
           className="min-w-0 flex-1 rounded-sm px-2 py-1.5 text-body-sm font-semibold text-text outline-none transition-colors hover:bg-surface focus:bg-surface"
         />
-        <div className="flex flex-none items-center gap-3">
-          {/* 저장 상태 + 저장 버튼. 언제 저장할지는 사용자가 골라요 */}
-          <span className="text-caption text-text-subtle">
+        <div className="flex flex-none items-center gap-1.5 sm:gap-3">
+          {/* 저장 상태 텍스트는 좁은 화면에선 숨기고 버튼만 남겨요 */}
+          <span className="hidden text-caption text-text-subtle sm:inline">
             {dirty ? "저장 안 됨" : "저장됨"}
           </span>
           <Button
@@ -203,53 +203,50 @@ export default function EditorPage() {
           >
             저장
           </Button>
-          <span className="h-5 w-px bg-border" />
-          <div className="flex items-center gap-1.5">
-            {pdfOnly ? null : (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => saveThen(() => downloadPptx(deck))}
-              >
-                PPTX
-              </Button>
-            )}
-            <Button
-              variant={pdfOnly ? "primary" : "ghost"}
-              size="sm"
-              onClick={() => saveThen(() => router.push(`/d/${deck.id}?print=1`))}
-            >
-              PDF
-            </Button>
-          </div>
+          <span className="hidden h-5 w-px bg-border sm:block" />
           {pdfOnly ? null : (
-            <>
-              <span className="h-5 w-px bg-border" />
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => saveThen(() => router.push(`/d/${deck.id}`))}
-              >
-                발표하기
-              </Button>
-            </>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="hidden sm:inline-flex"
+              onClick={() => saveThen(() => downloadPptx(deck))}
+            >
+              PPTX
+            </Button>
+          )}
+          <Button
+            variant={pdfOnly ? "primary" : "ghost"}
+            size="sm"
+            onClick={() => saveThen(() => router.push(`/d/${deck.id}?print=1`))}
+          >
+            PDF
+          </Button>
+          {pdfOnly ? null : (
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => saveThen(() => router.push(`/d/${deck.id}`))}
+            >
+              발표
+            </Button>
           )}
         </div>
       </header>
 
-      <div className="flex min-h-0 flex-1">
-        <nav className="flex w-[184px] flex-none flex-col gap-2 overflow-y-auto border-r border-border bg-bg p-3">
+      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
+        {/* 썸네일 — 모바일은 가로 스트립(미리보기 아래), 데스크톱은 왼쪽 세로 목록 */}
+        <nav className="order-2 flex flex-none gap-2 overflow-x-auto border-t border-border bg-bg p-3 lg:order-1 lg:w-[184px] lg:flex-col lg:overflow-x-visible lg:overflow-y-auto lg:border-t-0 lg:border-r">
           {deck.slides.map((s, i) => (
-            <div key={s.id} className="relative">
-              {/* 끌어다 놓을 위치를 미리 보여주는 삽입 선 — 여기로 들어가요 */}
+            <div key={s.id} className="relative w-28 flex-none lg:w-auto">
+              {/* 끌어다 놓을 위치를 미리 보여주는 삽입 선(데스크톱 드래그) */}
               {dragIndex !== null && dropTarget === i && dragIndex !== i ? (
-                <div className="pointer-events-none absolute -top-1 left-4 right-0 z-10 flex items-center gap-1">
+                <div className="pointer-events-none absolute -top-1 left-4 right-0 z-10 hidden items-center gap-1 lg:flex">
                   <span className="size-2 rounded-full bg-brand" />
                   <span className="h-[3px] flex-1 rounded-full bg-brand" />
                 </div>
               ) : null}
               <div
-                // PPT처럼 썸네일을 잡아 끌어 순서를 바꿔요
+                // PPT처럼 썸네일을 잡아 끌어 순서를 바꿔요(데스크톱)
                 draggable
                 onDragStart={() => setDragIndex(i)}
                 onDragOver={(e) => {
@@ -262,11 +259,11 @@ export default function EditorPage() {
                   setDropTarget(null);
                 }}
                 onClick={() => setIndex(i)}
-                className={`flex cursor-grab items-start gap-2 rounded-sm text-left transition active:cursor-grabbing ${
+                className={`flex items-start gap-2 rounded-sm text-left transition lg:cursor-grab lg:active:cursor-grabbing ${
                   i === index ? "ring-2 ring-brand" : "hover:opacity-80"
                 } ${dragIndex === i ? "opacity-40" : ""}`}
               >
-                <span className="w-4 flex-none pt-1 text-caption text-text-subtle">
+                <span className="hidden w-4 flex-none pt-1 text-caption text-text-subtle lg:block">
                   {i + 1}
                 </span>
                 <SlideStage
@@ -280,15 +277,15 @@ export default function EditorPage() {
           ))}
           <button
             onClick={() => setPicker("add")}
-            className="rounded-sm border border-dashed border-border py-3 text-body-sm font-medium text-text-subtle transition-colors hover:border-brand hover:text-brand"
+            className="w-28 flex-none rounded-sm border border-dashed border-border py-3 text-body-sm font-medium text-text-subtle transition-colors hover:border-brand hover:text-brand lg:w-auto"
           >
             + 슬라이드
           </button>
         </nav>
 
-        <main className="flex min-w-0 flex-1 flex-col">
-          {/* 슬라이드 조작 막대 — 위치, 순서 바꾸기, 복제·삭제를 한 줄에 모았어요 */}
-          <div className="flex flex-none items-center justify-between border-b border-border px-5 py-2.5">
+        {/* 미리보기 — 모바일은 상단 고정(16:9), 데스크톱은 가운데를 채워요 */}
+        <main className="order-1 flex flex-none flex-col lg:order-2 lg:min-w-0 lg:flex-1">
+          <div className="flex flex-none items-center justify-between border-b border-border px-4 py-2.5 sm:px-5">
             <span className="text-body-sm font-semibold text-text">
               슬라이드 {index + 1}
               <span className="font-normal text-text-subtle"> / {deck.slides.length}</span>
@@ -307,7 +304,7 @@ export default function EditorPage() {
               </ToolbarButton>
             </div>
           </div>
-          <div className="flex min-h-0 flex-1 items-center justify-center p-6">
+          <div className="flex aspect-video w-full items-center justify-center p-3 lg:aspect-auto lg:min-h-0 lg:flex-1 lg:p-6">
             <SlideStage
               layout={slide.layout}
               data={slide.data}
@@ -316,7 +313,8 @@ export default function EditorPage() {
           </div>
         </main>
 
-        <aside className="flex w-[400px] flex-none flex-col overflow-y-auto border-l border-border bg-bg">
+        {/* 폼 — 모바일은 아래에서 남은 공간을 채우며 스크롤, 데스크톱은 오른쪽 사이드바 */}
+        <aside className="order-3 flex min-h-0 flex-1 flex-col overflow-y-auto border-t border-border bg-bg lg:flex-none lg:border-t-0 lg:border-l lg:w-[400px]">
           <div className="flex items-center justify-between gap-2 border-b border-border px-5 py-3.5">
             <div className="min-w-0">
               <p className="text-body-sm font-bold text-text">{layout.name}</p>
