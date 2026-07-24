@@ -33,6 +33,14 @@ body {
     background: #fff;
   }
 
+  /* 인쇄·PDF에서도 배경색과 이미지를 그대로 찍어요.
+     이게 없으면 브라우저가 배경을 비워서(잉크 절약) 그린 배경·민트·표 색이 사라져요. */
+  .print-page,
+  .print-page * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
   .print-hide {
     display: none !important;
   }
