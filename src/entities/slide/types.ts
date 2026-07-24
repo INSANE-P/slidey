@@ -24,7 +24,13 @@ export interface FieldDef {
   fields?: FieldDef[];
 }
 
-export type LayoutGroup = "표지·마무리" | "본문" | "사람·목록" | "데이터";
+export type LayoutGroup =
+  | "표지·마무리"
+  | "본문"
+  | "사람·목록"
+  | "데이터"
+  | "컨퍼런스"
+  | "포스터";
 
 export interface LayoutDef {
   id: string;
@@ -34,6 +40,10 @@ export interface LayoutDef {
   group: LayoutGroup;
   /** green이면 그린 배경 슬라이드 */
   tone: "green" | "white";
+  /** 원본 캔버스 크기. 없으면 16:9 슬라이드(1280x720), 포스터는 세로형을 지정해요 */
+  canvas?: { w: number; h: number };
+  /** 포스터처럼 PDF로만 내보내는 레이아웃이면 true (PPTX 버튼을 숨겨요) */
+  pdfOnly?: boolean;
   fields: FieldDef[];
   /** 새로 추가할 때 채워지는 기본값 */
   sample: SlideData;

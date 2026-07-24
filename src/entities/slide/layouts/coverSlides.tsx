@@ -73,7 +73,7 @@ export function Quote({ data }: SlideProps) {
   return (
     <GreenSlide>
       <div className="absolute inset-0 flex flex-col items-center justify-center px-[120px]">
-        <p className="text-center text-[52px] leading-[1.4] font-bold tracking-[-0.02em]">
+        <p className="text-center text-[52px] leading-[1.4] font-bold tracking-[-0.02em] whitespace-pre-line">
           {asText(data.quote)}
         </p>
         {asText(data.author) ? (

@@ -165,6 +165,93 @@ export const PRESETS: Preset[] = [
       { layout: "closing", data: { title: "즐거운 시간 되세요" } },
     ],
   },
+  {
+    id: "conference",
+    name: "그리디콘",
+    description: "컨퍼런스 진행. 오프닝 → 연사 세션 → 실시간 질문 QR → 경품.",
+    slides: [
+      {
+        layout: "cover",
+        data: {
+          title: "세종 그리디콘",
+          subtitle: "Sejong Greedy Conference",
+          meta: "2026.11.19(수) ~ 11.20(목)\n대양 AI 센터 콜라보랩",
+        },
+      },
+      {
+        layout: "content",
+        data: {
+          title: "부스 소개",
+          badge: "행사 안내",
+          body: "그리디 — 포토 부스\n판도라큐브 — 자체 제작 게임 전시\n엔샵 — 퀴즈와 사은품",
+          bullet: "dot",
+        },
+      },
+      {
+        layout: "table",
+        data: {
+          title: "오늘의 연사자",
+          table: {
+            head: ["시간", "발표 주제", "연사"],
+            rows: [
+              ["17:00", "어제보다 나은 오늘 만들기", "김주환님"],
+              ["18:00", "천천히 그러나 분명히", "류성현님"],
+              ["19:00", "설계하는 개발자", "이제응님"],
+            ],
+          },
+        },
+      },
+      {
+        layout: "speaker",
+        data: {
+          title: "어제보다 나은 오늘 만들기",
+          speaker: "김주환님",
+          affiliation: "N사 백엔드 개발자",
+        },
+      },
+      {
+        layout: "qr",
+        data: {
+          title: "실시간 질문 QR",
+          badge: "QnA",
+          body: "곳곳에 부착되어 있어요!\n언제든 질문을 남겨주실 수 있어요.",
+          url: "https://greedy.example/qna",
+        },
+      },
+      {
+        layout: "intermission",
+        data: {
+          title: "쉬는 시간이에요 :)",
+          note: "다음 연사자에게 궁금한 점은 QR로 미리 남겨주세요.",
+          next: "류성현님 — 천천히 그러나 분명히",
+        },
+      },
+      {
+        layout: "speaker",
+        data: {
+          title: "천천히 그러나 분명히",
+          speaker: "류성현님",
+          affiliation: "우아한테크코스 코치",
+        },
+      },
+      {
+        layout: "content",
+        data: {
+          title: "경품 추첨",
+          badge: "이벤트",
+          body: "1등(1명) — 기계식 키보드\n2등(2명) — 버티컬 마우스",
+          bullet: "dot",
+        },
+      },
+      { layout: "closing", data: { title: "감사합니다" } },
+    ],
+  },
+  {
+    id: "poster",
+    name: "포스터",
+    description: "세로형 홍보 포스터 한 장. PDF로 내보내 붙여요.",
+    slides: [{ layout: "poster" }],
+  },
 ];
 
 export const getPreset = (id: string) =>

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getDeck } from "@/entities/deck/storage";
 import type { Deck } from "@/entities/deck/types";
+import { getCanvas, getLayout } from "@/entities/slide/layouts";
 import { SlideStage } from "@/entities/slide/SlideStage";
 import { SlideView } from "@/entities/slide/SlideView";
 
@@ -110,8 +111,14 @@ export default function ViewerPage() {
   if (!deck) return null;
 
   if (printMode) {
+    // 포스터처럼 세로형 캔버스면 인쇄 페이지도 그 크기로 맞춰요.
+    const canvas = getCanvas(deck.slides[0]?.layout ?? "cover");
+    const portrait = deck.slides.every((s) => getLayout(s.layout).pdfOnly);
     return (
       <div className="bg-white">
+        {portrait ? (
+          <style>{`@page { size: ${canvas.w}px ${canvas.h}px; margin: 0 }`}</style>
+        ) : null}
         <p className="print-hide p-6 text-body-sm text-text-subtle">
           인쇄창에서 <b>대상을 &quot;PDF로 저장&quot;</b>, 여백은 <b>없음</b>,
           배경 그래픽은 <b>켜기</b>로 두면 그대로 나와요.

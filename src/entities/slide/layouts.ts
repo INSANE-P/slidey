@@ -1,4 +1,5 @@
 import type { LayoutDef } from "./types";
+import { POSTER_CANVAS } from "./layouts/posterSlides";
 
 /**
  * 레이아웃 한 벌 = 폼 + 슬라이드.
@@ -482,6 +483,178 @@ export const LAYOUTS: LayoutDef[] = [
       ],
     },
   },
+
+  {
+    id: "speaker",
+    name: "연사 세션",
+    description: "컨퍼런스 세션 오프너. 발표 주제와 연사 소개를 크게.",
+    group: "컨퍼런스",
+    tone: "green",
+    fields: [
+      {
+        key: "title",
+        label: "발표 주제",
+        type: "text",
+        placeholder: "어제보다 나은 오늘 만들기",
+      },
+      { key: "speaker", label: "연사", type: "text", placeholder: "김주환님" },
+      {
+        key: "affiliation",
+        label: "소속",
+        type: "text",
+        optional: true,
+        placeholder: "N사 백엔드 개발자",
+      },
+    ],
+    sample: {
+      title: "어제보다 나은 오늘 만들기",
+      speaker: "김주환님",
+      affiliation: "N사 백엔드 개발자",
+    },
+  },
+  {
+    id: "intermission",
+    name: "쉬는 시간",
+    description: "세션 사이 쉬는 시간. 안내와 다음 세션 예고를 보여줘요.",
+    group: "컨퍼런스",
+    tone: "green",
+    fields: [
+      { key: "title", label: "제목", type: "text", placeholder: "쉬는 시간이에요 :)" },
+      {
+        key: "note",
+        label: "안내",
+        type: "text",
+        optional: true,
+        placeholder: "다음 연사자에게 궁금한 점은 QR로 미리 남겨주세요.",
+      },
+      {
+        key: "next",
+        label: "다음 세션",
+        type: "text",
+        optional: true,
+        placeholder: "류성현님 — 천천히 그러나 분명히",
+      },
+    ],
+    sample: {
+      title: "쉬는 시간이에요 :)",
+      note: "다음 연사자에게 궁금한 점은 QR로 미리 남겨주세요.",
+      next: "류성현님 — 천천히 그러나 분명히",
+    },
+  },
+  {
+    id: "qr",
+    name: "QR 코드",
+    description: "주소를 넣으면 QR 코드가 생겨요. 실시간 질문·신청 링크에 써요.",
+    group: "컨퍼런스",
+    tone: "white",
+    fields: [
+      { key: "title", label: "제목", type: "text", placeholder: "실시간 질문 QR" },
+      { key: "badge", label: "말머리", type: "text", optional: true },
+      {
+        key: "body",
+        label: "안내",
+        type: "list",
+        max: 4,
+        optional: true,
+        placeholder: "곳곳에 부착되어 있어요!\n언제든 질문을 남겨주실 수 있어요.",
+      },
+      {
+        key: "url",
+        label: "주소",
+        type: "text",
+        hint: "이 주소로 QR이 만들어져요.",
+        placeholder: "https://forms.gle/...",
+      },
+      { key: "caption", label: "QR 아래 문구", type: "text", optional: true },
+    ],
+    sample: {
+      title: "실시간 질문 QR",
+      badge: "",
+      body: "곳곳에 부착되어 있어요!\n언제든 질문을 남겨주실 수 있어요.",
+      url: "https://greedy.example/qna",
+      caption: "",
+    },
+  },
+
+  {
+    id: "poster",
+    name: "포스터",
+    description: "세로형 홍보 포스터. PDF로 내보내 인쇄·게시에 써요.",
+    group: "포스터",
+    tone: "white",
+    canvas: POSTER_CANVAS,
+    pdfOnly: true,
+    fields: [
+      { key: "eyebrow", label: "위 문구", type: "text", optional: true, placeholder: "2025" },
+      { key: "title", label: "제목", type: "text", placeholder: "세종 그리디콘" },
+      {
+        key: "subtitle",
+        label: "부제",
+        type: "text",
+        optional: true,
+        placeholder: "Sejong Greedy Conference",
+      },
+      {
+        key: "description",
+        label: "소개",
+        type: "textarea",
+        optional: true,
+        placeholder: "어떤 행사인지 한두 문장으로 소개해요.",
+      },
+      {
+        key: "info",
+        label: "정보",
+        type: "items",
+        max: 5,
+        hint: "행사 장소·기간·신청 같은 항목이에요.",
+        fields: [
+          { key: "label", label: "항목", type: "text", placeholder: "행사 장소" },
+          { key: "value", label: "내용", type: "text", placeholder: "대양 AI 센터 콜라보랩" },
+        ],
+      },
+      {
+        key: "qrs",
+        label: "QR",
+        type: "items",
+        max: 2,
+        hint: "주소를 넣으면 QR이 생겨요. 최대 2개.",
+        fields: [
+          { key: "label", label: "이름", type: "text", placeholder: "참가 신청" },
+          { key: "url", label: "주소", type: "text", placeholder: "https://forms.gle/..." },
+        ],
+      },
+      { key: "schedule", label: "일정표", type: "table" },
+      {
+        key: "footer",
+        label: "주최·후원",
+        type: "text",
+        optional: true,
+        placeholder: "세종대학교 개발 동아리 그리디",
+      },
+    ],
+    sample: {
+      eyebrow: "2025",
+      title: "세종 그리디콘",
+      subtitle: "Sejong Greedy Conference",
+      description:
+        "세종대학교 개발 동아리 그리디가 여는 개발 컨퍼런스예요. 현업 개발자들의 이야기를 듣고 함께 성장해요.",
+      info: [
+        { label: "행사 장소", value: "대양 AI 센터 콜라보랩" },
+        { label: "행사 기간", value: "11.19(수) ~ 11.20(목)" },
+        { label: "참가 신청", value: "QR로 신청해 주세요" },
+      ],
+      qrs: [{ label: "참가 신청", url: "https://greedy.example/apply" }],
+      schedule: {
+        head: ["시간", "발표 주제", "연사"],
+        rows: [
+          ["17:00", "어제보다 나은 오늘 만들기", "김주환님"],
+          ["18:00", "천천히 그러나 분명히", "류성현님"],
+          ["19:00", "설계하는 개발자", "이제응님"],
+        ],
+      },
+      footer: "세종대학교 개발 동아리 그리디",
+    },
+  },
 ];
 
 export const LAYOUT_MAP = new Map(LAYOUTS.map((l) => [l.id, l]));
@@ -489,9 +662,16 @@ export const LAYOUT_MAP = new Map(LAYOUTS.map((l) => [l.id, l]));
 export const getLayout = (id: string): LayoutDef =>
   LAYOUT_MAP.get(id) ?? LAYOUTS[0];
 
+/** 16:9 슬라이드가 기본. 포스터 같은 레이아웃은 자기 캔버스를 지정해요. */
+export const DEFAULT_CANVAS = { w: 1280, h: 720 };
+export const getCanvas = (id: string): { w: number; h: number } =>
+  LAYOUT_MAP.get(id)?.canvas ?? DEFAULT_CANVAS;
+
 export const LAYOUT_GROUPS = [
   "표지·마무리",
   "본문",
   "사람·목록",
   "데이터",
+  "컨퍼런스",
+  "포스터",
 ] as const;

@@ -3,6 +3,7 @@
 import type PptxGenJSType from "pptxgenjs";
 import { asItems, asLines, asTable, asText } from "@/entities/slide/types";
 import type { Deck, Slide } from "@/entities/deck/types";
+import { qrModules } from "@/entities/slide/qr";
 
 /*
  * 웹 슬라이드는 1280x720px, PowerPoint 슬라이드는 13.333x7.5in이에요.
@@ -65,6 +66,33 @@ function addImageAt(
   const data = imageData(src);
   if (data) slide.addImage({ ...opts, data });
   else slide.addImage({ ...opts, path: src });
+}
+
+/** 주소를 QR PNG(데이터)로 그려요. 내보내기는 브라우저에서 돌아서 canvas를 쓸 수 있어요. */
+function qrPngData(url: string, px: number): string {
+  const modules = qrModules(url);
+  const n = modules.length;
+  const canvas = document.createElement("canvas");
+  canvas.width = px;
+  canvas.height = px;
+  const ctx = canvas.getContext("2d")!;
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, px, px);
+  ctx.fillStyle = "#000000";
+  const cell = px / n;
+  for (let r = 0; r < n; r++) {
+    for (let c = 0; c < n; c++) {
+      if (modules[r][c]) {
+        ctx.fillRect(
+          Math.floor(c * cell),
+          Math.floor(r * cell),
+          Math.ceil(cell),
+          Math.ceil(cell),
+        );
+      }
+    }
+  }
+  return canvas.toDataURL("image/png").slice("data:".length);
 }
 
 /** 여러 줄을 문단으로 넣어요. pptxgenjs는 마지막 줄만 breakLine이 없어야 합니다. */
@@ -820,6 +848,157 @@ function renderSlide(pptx: Pptx, slide: Slide, logo: string) {
             margin: 0,
           },
         );
+      });
+      break;
+    }
+
+    case "speaker": {
+      greenBackground(s);
+      s.addText("SESSION", {
+        x: inch(100),
+        y: inch(150),
+        w: inch(1080),
+        h: inch(34),
+        fontFace: FACE,
+        fontSize: pt(24),
+        bold: true,
+        color: WHITE,
+        align: "center",
+        charSpacing: 3,
+        margin: 0,
+      });
+      s.addText(title, {
+        x: inch(100),
+        y: inch(230),
+        w: inch(1080),
+        h: inch(180),
+        fontFace: FACE,
+        fontSize: pt(60),
+        bold: true,
+        color: WHITE,
+        align: "center",
+        valign: "middle",
+        lineSpacingMultiple: 1.25,
+        margin: 0,
+      });
+      if (asText(d.speaker)) {
+        s.addText(asText(d.speaker), {
+          x: inch(100),
+          y: inch(452),
+          w: inch(1080),
+          h: inch(40),
+          fontFace: FACE,
+          fontSize: pt(30),
+          bold: true,
+          color: WHITE,
+          align: "center",
+          margin: 0,
+        });
+      }
+      if (asText(d.affiliation)) {
+        s.addText(asText(d.affiliation), {
+          x: inch(100),
+          y: inch(498),
+          w: inch(1080),
+          h: inch(34),
+          fontFace: FACE,
+          fontSize: pt(24),
+          color: WHITE,
+          align: "center",
+          margin: 0,
+        });
+      }
+      addLogo(s, logo, "bottom");
+      break;
+    }
+
+    case "intermission": {
+      greenBackground(s);
+      s.addText(title, {
+        x: inch(100),
+        y: inch(240),
+        w: inch(1080),
+        h: inch(100),
+        fontFace: FACE,
+        fontSize: pt(60),
+        bold: true,
+        color: WHITE,
+        align: "center",
+        margin: 0,
+      });
+      if (asText(d.note)) {
+        s.addText(asText(d.note), {
+          x: inch(200),
+          y: inch(352),
+          w: inch(880),
+          h: inch(70),
+          fontFace: FACE,
+          fontSize: pt(26),
+          color: WHITE,
+          align: "center",
+          lineSpacingMultiple: 1.5,
+          margin: 0,
+        });
+      }
+      if (asText(d.next)) {
+        s.addText(
+          [
+            { text: "다음 세션   ", options: { bold: true, color: WHITE, fontSize: pt(22) } },
+            { text: asText(d.next), options: { bold: true, color: WHITE, fontSize: pt(26) } },
+          ],
+          {
+            x: inch(240),
+            y: inch(452),
+            w: inch(800),
+            h: inch(56),
+            fontFace: FACE,
+            align: "center",
+            valign: "middle",
+            fill: { color: "1F8A6B" },
+            rectRadius: 0.3,
+            margin: 0,
+          },
+        );
+      }
+      addLogo(s, logo, "bottom");
+      break;
+    }
+
+    case "qr": {
+      const badge = asText(d.badge);
+      whiteHeader(s, logo, title, badge);
+      const top = badge ? 194 : 168;
+      s.addText(paragraphs(asLines(d.body)), {
+        x: inch(PAD),
+        y: inch(top),
+        w: inch(620),
+        h: inch(720 - top - 56),
+        fontFace: FACE,
+        fontSize: pt(28),
+        color: MUTED,
+        lineSpacingMultiple: 1.45,
+        paraSpaceAfter: 8,
+        valign: "middle",
+        margin: 0,
+      });
+      const qrPx = 360;
+      const originX = 1280 - PAD - qrPx - 16;
+      const originY = (720 - qrPx) / 2;
+      s.addShape("roundRect", {
+        x: inch(originX - 16),
+        y: inch(originY - 16),
+        w: inch(qrPx + 32),
+        h: inch(qrPx + 32),
+        fill: { color: WHITE },
+        line: { color: MINT, width: 1 },
+        rectRadius: 0.12,
+      });
+      s.addImage({
+        data: qrPngData(asText(d.url) || "https://greedy.example", qrPx),
+        x: inch(originX),
+        y: inch(originY),
+        w: inch(qrPx),
+        h: inch(qrPx),
       });
       break;
     }

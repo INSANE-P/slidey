@@ -12,6 +12,7 @@ export function TableSlide({ data }: SlideProps) {
           {asText(data.description)}
         </p>
       ) : null}
+      {head.length === 0 ? null : (
       <table className="w-full table-fixed border-collapse text-[22px]">
         <thead>
           <tr>
@@ -40,6 +41,7 @@ export function TableSlide({ data }: SlideProps) {
           ))}
         </tbody>
       </table>
+      )}
     </WhiteSlide>
   );
 }

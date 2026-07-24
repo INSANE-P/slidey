@@ -21,6 +21,12 @@ import {
   Points,
 } from "@/entities/slide/layouts/peopleSlides";
 import { Stats, TableSlide, Timeline } from "@/entities/slide/layouts/dataSlides";
+import {
+  Intermission,
+  Qr,
+  Speaker,
+} from "@/entities/slide/layouts/conferenceSlides";
+import { Poster } from "@/entities/slide/layouts/posterSlides";
 
 /** 레이아웃 id → 그리는 컴포넌트. lib/layouts.ts의 id와 짝을 맞춰요. */
 export const SLIDE_COMPONENTS: Record<string, ComponentType<SlideProps>> = {
@@ -41,6 +47,10 @@ export const SLIDE_COMPONENTS: Record<string, ComponentType<SlideProps>> = {
   table: TableSlide,
   stats: Stats,
   timeline: Timeline,
+  speaker: Speaker,
+  intermission: Intermission,
+  qr: Qr,
+  poster: Poster,
 };
 
 /** 레이아웃 id와 값을 받아 해당 슬라이드를 그려요. */

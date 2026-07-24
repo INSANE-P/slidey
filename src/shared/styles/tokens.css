@@ -73,6 +73,8 @@
      사이트 UI에는 쓰지 않아요. export-pptx.ts의 상수와 같은 값입니다. */
   --color-slide-green: #007355;
   --color-slide-green-deep: #005b44;
+  /* 포스터 헤더처럼 너무 진하지 않게 쓰는 산뜻한 그린 */
+  --color-slide-green-soft: #0e8f70;
   --color-slide-mint: #d9ead3;
   --color-slide-ink: #272525;
   --color-slide-muted: #595959;
