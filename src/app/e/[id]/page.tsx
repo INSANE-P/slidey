@@ -27,6 +27,7 @@ export default function EditorPage() {
   const [picker, setPicker] = useState<PickerMode>(null);
   const [dirty, setDirty] = useState(false);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dropTarget, setDropTarget] = useState<number | null>(null);
 
   // 저장은 사용자가 원할 때만 해요. 최신 값은 ref로 들고 있어서 단축키에서도 정확히 저장돼요.
   const deckRef = useRef<Deck | null>(null);
@@ -75,6 +76,8 @@ export default function EditorPage() {
     () => (slide ? getLayout(slide.layout) : null),
     [slide],
   );
+  // 포스터처럼 PDF로만 내보내는 덱이면 PPTX·발표를 숨겨요.
+  const pdfOnly = !!deck?.slides.every((s) => getLayout(s.layout).pdfOnly);
 
   // Ctrl/Cmd+S로 저장, 방향키로 슬라이드 이동(입력 중일 땐 건드리지 않아요).
   useEffect(() => {
@@ -170,6 +173,7 @@ export default function EditorPage() {
 
   // 썸네일을 target 위치에 떨어뜨리면 순서가 바뀌고, 보고 있던 슬라이드를 계속 따라가요.
   const dropOn = (target: number) => {
+    setDropTarget(null);
     if (dragIndex === null || dragIndex === target) return;
     setSlides(moveSlide(deck.slides, dragIndex, target));
     setIndex(target);
@@ -201,57 +205,77 @@ export default function EditorPage() {
           </Button>
           <span className="h-5 w-px bg-border" />
           <div className="flex items-center gap-1.5">
+            {pdfOnly ? null : (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => saveThen(() => downloadPptx(deck))}
+              >
+                PPTX
+              </Button>
+            )}
             <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => saveThen(() => downloadPptx(deck))}
-            >
-              PPTX
-            </Button>
-            <Button
-              variant="ghost"
+              variant={pdfOnly ? "primary" : "ghost"}
               size="sm"
               onClick={() => saveThen(() => router.push(`/d/${deck.id}?print=1`))}
             >
               PDF
             </Button>
           </div>
-          <span className="h-5 w-px bg-border" />
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => saveThen(() => router.push(`/d/${deck.id}`))}
-          >
-            발표하기
-          </Button>
+          {pdfOnly ? null : (
+            <>
+              <span className="h-5 w-px bg-border" />
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => saveThen(() => router.push(`/d/${deck.id}`))}
+              >
+                발표하기
+              </Button>
+            </>
+          )}
         </div>
       </header>
 
       <div className="flex min-h-0 flex-1">
         <nav className="flex w-[184px] flex-none flex-col gap-2 overflow-y-auto border-r border-border bg-bg p-3">
           {deck.slides.map((s, i) => (
-            <div
-              key={s.id}
-              // PPT처럼 썸네일을 잡아 끌어 순서를 바꿔요
-              draggable
-              onDragStart={() => setDragIndex(i)}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={() => dropOn(i)}
-              onDragEnd={() => setDragIndex(null)}
-              onClick={() => setIndex(i)}
-              className={`flex cursor-grab items-start gap-2 rounded-sm text-left transition active:cursor-grabbing ${
-                i === index ? "ring-2 ring-brand" : "hover:opacity-80"
-              } ${dragIndex === i ? "opacity-40" : ""}`}
-            >
-              <span className="w-4 flex-none pt-1 text-caption text-text-subtle">
-                {i + 1}
-              </span>
-              <SlideStage
-                layout={s.layout}
-                data={s.data}
-                className="pointer-events-none aspect-video flex-1 rounded-sm border border-border bg-bg"
-                rounded={false}
-              />
+            <div key={s.id} className="relative">
+              {/* 끌어다 놓을 위치를 미리 보여주는 삽입 선 — 여기로 들어가요 */}
+              {dragIndex !== null && dropTarget === i && dragIndex !== i ? (
+                <div className="pointer-events-none absolute -top-1 left-4 right-0 z-10 flex items-center gap-1">
+                  <span className="size-2 rounded-full bg-brand" />
+                  <span className="h-[3px] flex-1 rounded-full bg-brand" />
+                </div>
+              ) : null}
+              <div
+                // PPT처럼 썸네일을 잡아 끌어 순서를 바꿔요
+                draggable
+                onDragStart={() => setDragIndex(i)}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDropTarget(i);
+                }}
+                onDrop={() => dropOn(i)}
+                onDragEnd={() => {
+                  setDragIndex(null);
+                  setDropTarget(null);
+                }}
+                onClick={() => setIndex(i)}
+                className={`flex cursor-grab items-start gap-2 rounded-sm text-left transition active:cursor-grabbing ${
+                  i === index ? "ring-2 ring-brand" : "hover:opacity-80"
+                } ${dragIndex === i ? "opacity-40" : ""}`}
+              >
+                <span className="w-4 flex-none pt-1 text-caption text-text-subtle">
+                  {i + 1}
+                </span>
+                <SlideStage
+                  layout={s.layout}
+                  data={s.data}
+                  className="pointer-events-none aspect-video flex-1 rounded-sm border border-border bg-bg"
+                  rounded={false}
+                />
+              </div>
             </div>
           ))}
           <button

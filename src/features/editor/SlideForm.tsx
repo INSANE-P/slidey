@@ -199,12 +199,57 @@ function TableField({
       ),
     });
 
+  const removeCol = (c: number) =>
+    set({
+      head: table.head.filter((_, i) => i !== c),
+      rows: table.rows.map((row) => row.filter((_, i) => i !== c)),
+    });
+
+  const removeRow = (r: number) =>
+    set({ ...table, rows: table.rows.filter((_, i) => i !== r) });
+
+  // 표가 비어 있으면(열 0개) 섹션이 통째로 빠져요. '표 만들기'로 다시 세워요.
+  if (table.head.length === 0) {
+    return (
+      <div>
+        <Label field={field} />
+        <button
+          type="button"
+          onClick={() =>
+            set({ head: ["", "", ""], rows: [["", "", ""], ["", "", ""]] })
+          }
+          className="w-full rounded-sm border border-dashed border-border py-3 text-body-sm font-medium text-text-subtle transition-colors hover:border-brand hover:text-brand"
+        >
+          + 표 만들기
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Label field={field} />
       <div className="overflow-x-auto rounded-md border border-border p-2">
         <table className="w-full border-separate border-spacing-1">
           <tbody>
+            {/* 열 삭제 버튼 줄 — 열이 둘 이상일 때 각 열 위에 ✕ */}
+            {cols > 1 ? (
+              <tr>
+                {table.head.map((_, c) => (
+                  <td key={c} className="text-center">
+                    <button
+                      type="button"
+                      onClick={() => removeCol(c)}
+                      aria-label={`${c + 1}번째 열 삭제`}
+                      className="rounded-sm px-2 text-caption text-text-subtle transition-colors hover:text-danger"
+                    >
+                      ✕
+                    </button>
+                  </td>
+                ))}
+                <td />
+              </tr>
+            ) : null}
             <tr>
               {table.head.map((cell, c) => (
                 <td key={c}>
@@ -215,6 +260,7 @@ function TableField({
                   />
                 </td>
               ))}
+              <td />
             </tr>
             {table.rows.map((row, r) => (
               <tr key={r}>
@@ -227,6 +273,19 @@ function TableField({
                     />
                   </td>
                 ))}
+                {/* 행 삭제 — 행이 둘 이상일 때만 */}
+                <td className="w-6">
+                  {table.rows.length > 1 ? (
+                    <button
+                      type="button"
+                      onClick={() => removeRow(r)}
+                      aria-label={`${r + 1}번째 행 삭제`}
+                      className="px-1 text-caption text-text-subtle transition-colors hover:text-danger"
+                    >
+                      ✕
+                    </button>
+                  ) : null}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -254,15 +313,13 @@ function TableField({
         >
           + 열
         </button>
-        {table.rows.length > 1 ? (
-          <button
-            type="button"
-            onClick={() => set({ ...table, rows: table.rows.slice(0, -1) })}
-            className="rounded-sm px-3 py-1.5 text-caption text-text-subtle transition-colors hover:text-danger"
-          >
-            마지막 행 삭제
-          </button>
-        ) : null}
+        <button
+          type="button"
+          onClick={() => set({ head: [], rows: [] })}
+          className="ml-auto rounded-sm px-3 py-1.5 text-caption text-text-subtle transition-colors hover:text-danger"
+        >
+          표 삭제
+        </button>
       </div>
     </div>
   );
