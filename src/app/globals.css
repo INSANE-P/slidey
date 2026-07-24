@@ -1,0 +1,47 @@
+@import "tailwindcss";
+@import "../shared/styles/tokens.css";
+@import "pretendard/dist/web/static/pretendard.css";
+
+@theme {
+  --font-sans: "Pretendard Variable", Pretendard, system-ui, sans-serif;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+/* 슬라이드는 항상 1280x720 기준으로 그리고, 담는 그릇에 맞춰 통째로 축소해요.
+   그래서 화면·PDF·PPTX가 서로 어긋나지 않습니다.
+   배경색은 각 슬라이드가 유틸리티로 정해요 — 여기에 두면 Tailwind를 덮어씁니다. */
+.slide-canvas {
+  width: 1280px;
+  height: 720px;
+  flex: none;
+  position: relative;
+  overflow: hidden;
+}
+
+@media print {
+  @page {
+    size: 1280px 720px;
+    margin: 0;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  .print-hide {
+    display: none !important;
+  }
+
+  .print-page {
+    break-after: page;
+  }
+
+  .print-page:last-child {
+    break-after: auto;
+  }
+}
