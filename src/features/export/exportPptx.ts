@@ -131,10 +131,11 @@ function whiteHeader(
 ) {
   addLogo(slide, logo, "top");
 
+  // 화면(SlideFrame)과 같은 좌표: 제목 왼쪽 48, 라인 왼쪽 24, 라인 두께 10.
   if (badge) {
     slide.addText(badge, {
-      x: inch(PAD),
-      y: inch(28),
+      x: inch(48),
+      y: inch(26),
       w: inch(320),
       h: inch(34),
       fontFace: FACE,
@@ -149,13 +150,13 @@ function whiteHeader(
 
   if (title) {
     slide.addText(title, {
-      x: inch(PAD),
-      y: inch(badge ? 76 : 34),
+      x: inch(48),
+      y: inch(badge ? 78 : 20),
       // 제목은 오른쪽 위 엠블럼을 피해서 끝나요 (frame.tsx의 RULE_RIGHT와 같음)
-      w: inch(1280 - PAD - 190),
-      h: inch(70),
+      w: inch(1280 - 48 - 190),
+      h: inch(92),
       fontFace: FACE,
-      fontSize: pt(52),
+      fontSize: pt(68),
       bold: true,
       color: INK,
       align: "left",
@@ -165,20 +166,20 @@ function whiteHeader(
   }
 
   slide.addShape("rect", {
-    x: inch(PAD),
-    y: inch(badge ? 150 : 122),
-    w: inch(1280 - PAD - 190),
-    h: inch(5),
+    x: inch(24),
+    y: inch(badge ? 164 : 122),
+    w: inch(1280 - 24 - 190),
+    h: inch(10),
     fill: { color: GREEN },
     line: { color: GREEN },
   });
 }
 
 const contentBox = (badge?: string) => ({
-  x: inch(PAD),
-  y: inch(badge ? 194 : 168),
-  w: inch(1280 - PAD * 2),
-  h: inch(720 - (badge ? 194 : 168) - 56),
+  x: inch(48),
+  y: inch(badge ? 206 : 176),
+  w: inch(1280 - 48 - PAD),
+  h: inch(720 - (badge ? 206 : 176) - 52),
 });
 
 function bodyText(
@@ -311,16 +312,27 @@ function renderSlide(pptx: Pptx, slide: Slide, logo: string) {
     }
 
     case "section": {
-      greenBackground(s);
+      // 원본 간지: 흰 배경 + 위아래 굵은 그린 라인 + 검은 중앙 제목 + 우상단 엠블럼
+      addLogo(s, logo, "top");
+      for (const y of [268, 446]) {
+        s.addShape("rect", {
+          x: 0,
+          y: inch(y),
+          w: inch(1280),
+          h: inch(10),
+          fill: { color: GREEN },
+          line: { color: GREEN },
+        });
+      }
       s.addText(title, {
         x: inch(80),
-        y: inch(260),
+        y: inch(274),
         w: inch(1120),
-        h: inch(110),
+        h: inch(172),
         fontFace: FACE,
-        fontSize: pt(72),
+        fontSize: pt(88),
         bold: true,
-        color: WHITE,
+        color: INK,
         align: "center",
         valign: "middle",
         margin: 0,
@@ -328,17 +340,16 @@ function renderSlide(pptx: Pptx, slide: Slide, logo: string) {
       if (asText(d.subtitle)) {
         s.addText(asText(d.subtitle), {
           x: inch(80),
-          y: inch(380),
+          y: inch(468),
           w: inch(1120),
           h: inch(40),
           fontFace: FACE,
           fontSize: pt(28),
-          color: WHITE,
+          color: MUTED,
           align: "center",
           margin: 0,
         });
       }
-      addLogo(s, logo, "top", 200);
       break;
     }
 

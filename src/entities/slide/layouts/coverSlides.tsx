@@ -52,20 +52,23 @@ export function TeamDivider({ data }: SlideProps) {
 }
 
 export function Section({ data }: SlideProps) {
+  // 원본 그리디 간지 그대로 — 흰 배경 + 위아래 굵은 그린 라인 + 검은 중앙 제목 + 우상단 원형 엠블럼.
   return (
-    <GreenSlide>
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-[80px]">
-        <h1 className="text-center text-[72px] leading-[1.15] font-bold tracking-[-0.02em]">
+    <div className="slide-canvas bg-white text-slide-ink">
+      <GreedyLogo className="top-[20px] right-[24px]" />
+      <div className="absolute inset-x-0 top-[268px] h-[10px] bg-slide-green" />
+      <div className="absolute inset-x-0 top-[446px] h-[10px] bg-slide-green" />
+      <div className="absolute inset-x-0 top-[274px] flex h-[172px] items-center justify-center">
+        <h1 className="text-center text-[88px] leading-none font-bold tracking-[-0.02em]">
           {asText(data.title)}
         </h1>
-        {asText(data.subtitle) ? (
-          <p className="mt-[20px] text-center text-[28px] text-white/80">
-            {asText(data.subtitle)}
-          </p>
-        ) : null}
       </div>
-      <GreedyLogo className="top-[20px] right-[24px]" size={200} />
-    </GreenSlide>
+      {asText(data.subtitle) ? (
+        <p className="absolute inset-x-0 top-[472px] text-center text-[28px] text-slide-muted">
+          {asText(data.subtitle)}
+        </p>
+      ) : null}
+    </div>
   );
 }
 

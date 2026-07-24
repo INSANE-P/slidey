@@ -43,10 +43,10 @@ export const LAYOUTS: LayoutDef[] = [
   },
   {
     id: "section",
-    name: "간지",
-    description: "주제가 바뀔 때 끼우는 장. 그린 배경에 제목만 크게.",
+    name: "구분 페이지",
+    description: "주제가 바뀔 때 끼우는 장. 위아래 그린 라인 사이에 제목을 크게.",
     group: "표지·마무리",
-    tone: "green",
+    tone: "white",
     fields: [
       { key: "title", label: "제목", type: "text", placeholder: "프로젝트 소개" },
       {

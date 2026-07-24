@@ -1,15 +1,18 @@
 import type { ReactNode } from "react";
 
 /*
- * 슬라이드 좌표계는 1280x720 고정이에요.
- * 원본 PPT(960x540pt)에서 1pt = 1.333px로 옮겼습니다.
- * 여백·글자 크기를 바꾸려면 아래 상수만 만지세요.
+ * 슬라이드 좌표계는 1280x720 고정이에요. 원본 그리디 PPT(10인치=1280px)를
+ * 픽셀로 실측해 맞췄습니다 — 제목 글자높이 ~67px, 그린 라인 두께 ~11px, 좌측 여백 ~24~48px.
  */
 export const CANVAS = { w: 1280, h: 720 };
 export const PAD = 64;
+/** 제목·본문 왼쪽 여백. 원본은 거의 플러시(~44~48). */
+export const TITLE_LEFT = 48;
+/** 그린 라인은 제목보다 더 왼쪽에서 시작해요(~24). */
+export const RULE_LEFT = 24;
 /** 제목 밑 그린 라인은 오른쪽 기린 엠블럼을 피해서 끊겨요. */
 export const RULE_RIGHT = 190;
-export const CONTENT_TOP = 168;
+export const CONTENT_TOP = 176;
 
 /**
  * 슬라이드 코너의 그리디 엠블럼이에요. 원본 PPT처럼 우측에 둡니다.
@@ -58,33 +61,33 @@ export function WhiteSlide({
     <div className="slide-canvas bg-white text-slide-ink">
       <GreedyLogo className="top-[20px] right-[24px]" />
       {badge ? (
-        <div className="absolute top-[28px]" style={{ left: PAD }}>
+        <div className="absolute top-[26px]" style={{ left: TITLE_LEFT }}>
           <SlideBadge>{badge}</SlideBadge>
         </div>
       ) : null}
       {title ? (
         <h2
-          className="absolute truncate text-[52px] leading-[1.15] font-bold tracking-[-0.02em]"
+          className="absolute truncate text-[68px] leading-[1.1] font-bold tracking-[-0.02em]"
           style={{
-            left: PAD,
+            left: TITLE_LEFT,
             right: RULE_RIGHT,
-            top: badge ? 76 : 34,
+            top: badge ? 78 : 22,
           }}
         >
           {title}
         </h2>
       ) : null}
       <div
-        className="absolute h-[5px] bg-slide-green"
-        style={{ left: PAD, right: RULE_RIGHT, top: badge ? 150 : 122 }}
+        className="absolute h-[10px] bg-slide-green"
+        style={{ left: RULE_LEFT, right: RULE_RIGHT, top: badge ? 164 : 122 }}
       />
       <div
         className="absolute"
         style={{
-          left: PAD,
+          left: TITLE_LEFT,
           right: PAD,
-          top: badge ? CONTENT_TOP + 26 : CONTENT_TOP,
-          bottom: 56,
+          top: badge ? CONTENT_TOP + 30 : CONTENT_TOP,
+          bottom: 52,
         }}
       >
         {children}
