@@ -17,8 +17,8 @@ export function People({ data }: SlideProps) {
               className="size-[136px] flex-none"
             />
             <div className="flex-1">
-              <p className="mb-[10px] text-[30px] font-bold">{person.name}</p>
-              <BodyLines value={person.bullets} bullet="dot" size={22} gap={8} />
+              <p className="mb-[10px] text-[32px] font-bold">{person.name}</p>
+              <BodyLines value={person.bullets} bullet="dot" size={24} gap={10} />
             </div>
           </div>
         ))}
@@ -51,30 +51,30 @@ export function AvatarGrid({ data }: SlideProps) {
 
 export function Agenda({ data }: SlideProps) {
   const items = asLines(data.items).slice(0, 7);
-  // 항목이 적으면 번호도 글자도 큼직하게, 목록을 세로 가운데로 올려요.
-  const { size, gap, sparse } = densityByCount(items.length, [
-    { upTo: 3, size: 38, gap: 30 },
-    { upTo: 5, size: 32, gap: 22 },
-    { upTo: 7, size: 27, gap: 18 },
+  // 항목이 적으면 큼직하게 가운데로 모으고, 많으면 세로로 꽉 채워 배분해요(아래 여백 제거).
+  const { size, sparse } = densityByCount(items.length, [
+    { upTo: 3, size: 46, gap: 0 },
+    { upTo: 5, size: 40, gap: 0 },
+    { upTo: 7, size: 34, gap: 0 },
   ]);
-  const badge = Math.round(size * 1.6);
+  const badge = Math.round(size * 1.5);
   return (
     <WhiteSlide title={asText(data.title)}>
-      <div className={`flex h-full flex-col ${sparse ? "justify-center" : ""}`}>
-        <ol className="flex flex-col" style={{ gap }}>
-          {items.map((line, i) => (
-            <li key={i} className="flex items-center gap-[22px]">
-              <span
-                className="flex flex-none items-center justify-center rounded-full bg-slide-green font-bold text-white"
-                style={{ width: badge, height: badge, fontSize: size * 0.8 }}
-              >
-                {i + 1}
-              </span>
-              <span style={{ fontSize: size }}>{line}</span>
-            </li>
-          ))}
-        </ol>
-      </div>
+      <ol
+        className={`flex h-full flex-col ${sparse ? "justify-center gap-[36px]" : "justify-between py-[8px]"}`}
+      >
+        {items.map((line, i) => (
+          <li key={i} className="flex items-center gap-[24px]">
+            <span
+              className="flex flex-none items-center justify-center rounded-full bg-slide-green font-bold text-white"
+              style={{ width: badge, height: badge, fontSize: size * 0.8 }}
+            >
+              {i + 1}
+            </span>
+            <span style={{ fontSize: size }}>{line}</span>
+          </li>
+        ))}
+      </ol>
     </WhiteSlide>
   );
 }

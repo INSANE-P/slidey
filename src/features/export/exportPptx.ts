@@ -107,13 +107,18 @@ function greenBackground(slide: PptxSlide) {
 }
 
 /** 원본 PPT처럼 슬라이드 코너에 그리디 엠블럼을 얹어요. */
-function addLogo(slide: PptxSlide, logo: string, where: "top" | "bottom") {
+function addLogo(
+  slide: PptxSlide,
+  logo: string,
+  where: "top" | "bottom",
+  size = 128,
+) {
   slide.addImage({
     data: logo,
-    x: inch(where === "top" ? 1280 - 24 - 128 : 1280 - 16 - 128),
-    y: inch(where === "top" ? 20 : 720 - 16 - 128),
-    w: inch(128),
-    h: inch(128),
+    x: inch(where === "top" ? 1280 - 24 - size : 1280 - 16 - size),
+    y: inch(where === "top" ? 20 : 720 - 16 - size),
+    w: inch(size),
+    h: inch(size),
   });
 }
 
@@ -259,7 +264,7 @@ function renderSlide(pptx: Pptx, slide: Slide, logo: string) {
           margin: 0,
         });
       }
-      addLogo(s, logo, "bottom");
+      addLogo(s, logo, "bottom", 200);
       break;
     }
 
@@ -333,7 +338,7 @@ function renderSlide(pptx: Pptx, slide: Slide, logo: string) {
           margin: 0,
         });
       }
-      addLogo(s, logo, "top");
+      addLogo(s, logo, "top", 200);
       break;
     }
 
@@ -366,7 +371,7 @@ function renderSlide(pptx: Pptx, slide: Slide, logo: string) {
           margin: 0,
         });
       }
-      addLogo(s, logo, "bottom");
+      addLogo(s, logo, "bottom", 200);
       break;
     }
 
@@ -397,7 +402,7 @@ function renderSlide(pptx: Pptx, slide: Slide, logo: string) {
           margin: 0,
         });
       }
-      addLogo(s, logo, "bottom");
+      addLogo(s, logo, "bottom", 200);
       break;
     }
 
@@ -908,7 +913,7 @@ function renderSlide(pptx: Pptx, slide: Slide, logo: string) {
           margin: 0,
         });
       }
-      addLogo(s, logo, "bottom");
+      addLogo(s, logo, "bottom", 200);
       break;
     }
 
@@ -960,7 +965,7 @@ function renderSlide(pptx: Pptx, slide: Slide, logo: string) {
           },
         );
       }
-      addLogo(s, logo, "bottom");
+      addLogo(s, logo, "bottom", 200);
       break;
     }
 

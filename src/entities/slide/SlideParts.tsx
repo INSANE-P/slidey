@@ -46,8 +46,8 @@ export function densityByCount(
 export function BodyLines({
   value,
   bullet = "none",
-  size = 26,
-  gap = 20,
+  size = 28,
+  gap = 22,
   align = "left",
 }: {
   value: unknown;

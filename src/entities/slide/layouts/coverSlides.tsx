@@ -25,7 +25,7 @@ export function Cover({ data }: SlideProps) {
           </p>
         ))}
       </div>
-      <GreedyLogo className="bottom-[16px] right-[16px]" />
+      <GreedyLogo className="bottom-[16px] right-[16px]" size={200} />
     </GreenSlide>
   );
 }
@@ -64,7 +64,7 @@ export function Section({ data }: SlideProps) {
           </p>
         ) : null}
       </div>
-      <GreedyLogo className="top-[20px] right-[24px]" />
+      <GreedyLogo className="top-[20px] right-[24px]" size={200} />
     </GreenSlide>
   );
 }
@@ -82,7 +82,7 @@ export function Quote({ data }: SlideProps) {
           </p>
         ) : null}
       </div>
-      <GreedyLogo className="bottom-[16px] right-[16px]" />
+      <GreedyLogo className="bottom-[16px] right-[16px]" size={200} />
     </GreenSlide>
   );
 }
@@ -100,7 +100,7 @@ export function Closing({ data }: SlideProps) {
           </p>
         ) : null}
       </div>
-      <GreedyLogo className="bottom-[16px] right-[16px]" />
+      <GreedyLogo className="bottom-[16px] right-[16px]" size={200} />
     </GreenSlide>
   );
 }

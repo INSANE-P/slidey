@@ -11,15 +11,25 @@ export const PAD = 64;
 export const RULE_RIGHT = 190;
 export const CONTENT_TOP = 168;
 
-/** 슬라이드 코너의 그리디 엠블럼이에요. 원본 PPT처럼 우측에 둡니다. */
-export function GreedyLogo({ className = "" }: { className?: string }) {
+/**
+ * 슬라이드 코너의 그리디 엠블럼이에요. 원본 PPT처럼 우측에 둡니다.
+ * 표지·간지 같은 그린 배경은 크게(~200), 본문은 기본(128)으로 써요.
+ */
+export function GreedyLogo({
+  className = "",
+  size = 128,
+}: {
+  className?: string;
+  size?: number;
+}) {
   return (
     // eslint-disable-next-line @next/next/no-img-element -- 슬라이드는 고정 크기라 최적화가 필요 없어요
     <img
       src="/greedy-logo.png"
       alt=""
       aria-hidden
-      className={`absolute size-[128px] select-none ${className}`}
+      className={`absolute select-none ${className}`}
+      style={{ width: size, height: size }}
       draggable={false}
     />
   );

@@ -8,9 +8,9 @@ export function Content({ data }: SlideProps) {
   const bullet = asText(data.bullet) || "none";
   // 줄이 적으면 크게, 많으면 담백하게. 적을 땐 세로로만 가운데로 모아요.
   const { size, gap, sparse } = densityByCount(asLines(data.body).length, [
-    { upTo: 2, size: 40, gap: 28 },
-    { upTo: 4, size: 30, gap: 22 },
-    { upTo: 6, size: 26, gap: 18 },
+    { upTo: 2, size: 46, gap: 32 },
+    { upTo: 4, size: 36, gap: 26 },
+    { upTo: 6, size: 30, gap: 20 },
   ]);
   return (
     <WhiteSlide title={asText(data.title)} badge={asText(data.badge)}>
@@ -80,7 +80,7 @@ function CompareColumn({ title, body }: { title: string; body: unknown }) {
       <h3 className="mb-[20px] text-[32px] font-bold text-slide-green-deep">
         {title}
       </h3>
-      <BodyLines value={body} bullet="dot" size={23} gap={16} />
+      <BodyLines value={body} bullet="dot" size={26} gap={18} />
     </div>
   );
 }
