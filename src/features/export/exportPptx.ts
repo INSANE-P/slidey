@@ -382,7 +382,7 @@ function renderSlide(pptx: Pptx, slide: Slide, logo: string) {
           margin: 0,
         });
       }
-      addLogo(s, logo, "bottom", 200);
+      // 선언형 슬라이드라 엠블럼 없음
       break;
     }
 
@@ -924,7 +924,7 @@ function renderSlide(pptx: Pptx, slide: Slide, logo: string) {
           margin: 0,
         });
       }
-      addLogo(s, logo, "bottom", 200);
+      // 세션 제목에 집중하는 선언형 슬라이드라 엠블럼 없음
       break;
     }
 

@@ -85,7 +85,7 @@ export function Quote({ data }: SlideProps) {
           </p>
         ) : null}
       </div>
-      <GreedyLogo className="bottom-[16px] right-[16px]" size={200} />
+      {/* 한 문장에 집중하는 선언형 슬라이드라 엠블럼은 넣지 않아요(원본과 동일). */}
     </GreenSlide>
   );
 }
