@@ -30,7 +30,7 @@ export default function Home() {
   const start = (presetId: string) => {
     const preset = PRESETS.find((p) => p.id === presetId)!;
     const deck = createDeck(
-      preset.id === "blank" ? "이름 없는 덱" : preset.name,
+      preset.id === "blank" ? "이름 없는 슬라이드" : preset.name,
       preset.slides.map((s) => createSlide(s.layout, s.data)),
     );
     saveDeck(deck);
@@ -42,7 +42,7 @@ export default function Home() {
     try {
       deleteDeck(pending.id);
       setDecks(listDecks());
-      toast(`‘${pending.title}’ 덱을 삭제했어요`);
+      toast(`‘${pending.title}’ 슬라이드를 삭제했어요`);
     } catch {
       toast("삭제하지 못했어요. 다시 시도해 주세요", "error");
     }
@@ -90,7 +90,7 @@ export default function Home() {
           <h2 className="mb-6 text-h2 text-text">내 슬라이드</h2>
           {decks === null ? null : decks.length === 0 ? (
             <p className="rounded-lg border border-dashed border-border py-12 text-center text-body-sm text-text-subtle">
-              아직 만든 덱이 없어요. 위에서 하나 골라 시작해 보세요.
+              아직 만든 슬라이드가 없어요. 위에서 하나 골라 시작해 보세요.
             </p>
           ) : (
             <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -164,7 +164,7 @@ export default function Home() {
 
       {pending ? (
         <ConfirmDialog
-          title="이 덱을 삭제할까요?"
+          title="이 슬라이드를 삭제할까요?"
           description={`‘${pending.title}’이(가) 지워져요. 되돌릴 수 없어요.`}
           onConfirm={confirmDelete}
           onClose={() => setPending(null)}

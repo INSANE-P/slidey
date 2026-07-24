@@ -13,7 +13,7 @@ export const LAYOUTS: LayoutDef[] = [
   {
     id: "cover",
     name: "표지",
-    description: "덱의 첫 장. 그린 배경에 제목과 일시·장소를 넣어요.",
+    description: "발표 첫 장. 그린 배경에 제목과 일시·장소를 넣어요.",
     group: "표지·마무리",
     tone: "green",
     fields: [

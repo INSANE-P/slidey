@@ -118,7 +118,7 @@ export default function EditorPage() {
   if (missing) {
     return (
       <main className="flex flex-1 flex-col items-center justify-center gap-4">
-        <p className="text-text-subtle">이 브라우저에 없는 덱이에요.</p>
+        <p className="text-text-subtle">이 브라우저에 없는 슬라이드예요.</p>
         <Link href="/" className="font-semibold text-brand">
           홈으로 가기
         </Link>
