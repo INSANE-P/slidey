@@ -102,6 +102,38 @@ const paragraphs = (lines: string[]) =>
     options: { breakLine: i < lines.length - 1 },
   }));
 
+/** 줄 앞의 "- "/"• "를 머리 기호로 봐요 (화면 BodyLines와 같은 규칙). */
+const MARK = /^[-•]\s+/;
+
+/**
+ * 본문 줄을 pptxgenjs 문단 배열로. 줄별 "- "면 그 줄만 점, 안 붙으면 소제목(볼드).
+ * 대시가 없으면 bullet(dot·number·none)을 줄 전체에 적용해요(하위 호환).
+ */
+function bodyParagraphs(value: unknown, bullet: string) {
+  const raw = asLines(value);
+  const perLine = raw.some((l) => MARK.test(l));
+  return raw.map((line, i) => {
+    const marked = MARK.test(line);
+    const text = marked ? line.replace(MARK, "") : line;
+    const bulleted = perLine ? marked : bullet !== "none";
+    const isHeader = perLine && !marked;
+    const numbered = bulleted && !perLine && bullet === "number";
+    return {
+      text,
+      options: {
+        breakLine: i < raw.length - 1,
+        bold: isHeader ? true : undefined,
+        color: isHeader ? INK : MUTED,
+        bullet: bulleted
+          ? numbered
+            ? ({ type: "number" } as const)
+            : true
+          : false,
+      },
+    };
+  });
+}
+
 function greenBackground(slide: PptxSlide) {
   slide.background = { color: GREEN };
 }
@@ -188,10 +220,10 @@ function bodyText(
   badge?: string,
   bullet = "none",
 ) {
-  const lines = asLines(value);
-  if (!lines.length) return;
+  const paras = bodyParagraphs(value, bullet);
+  if (!paras.length) return;
 
-  slide.addText(paragraphs(lines), {
+  slide.addText(paras, {
     ...contentBox(badge),
     fontFace: FACE,
     fontSize: pt(26),
@@ -200,8 +232,6 @@ function bodyText(
     paraSpaceAfter: 8,
     margin: 0,
     valign: "top",
-    ...(bullet === "dot" ? { bullet: true } : {}),
-    ...(bullet === "number" ? { bullet: { type: "number" as const } } : {}),
   });
 }
 
@@ -1029,7 +1059,7 @@ function renderSlide(pptx: Pptx, slide: Slide, logo: string) {
         const imageLeft = asText(d.imageSide) === "left";
         const textX = imageLeft ? 48 + 500 + 48 : 48;
         const imageX = imageLeft ? 48 : 1280 - PAD - 500;
-        s.addText(paragraphs(asLines(d.body)), {
+        s.addText(bodyParagraphs(d.body, asText(d.bullet)), {
           x: inch(textX),
           y: inch(top),
           w: inch(1280 - 48 - PAD - 500 - 48),
@@ -1041,10 +1071,6 @@ function renderSlide(pptx: Pptx, slide: Slide, logo: string) {
           paraSpaceAfter: 8,
           valign: "middle",
           margin: 0,
-          ...(asText(d.bullet) === "dot" ? { bullet: true } : {}),
-          ...(asText(d.bullet) === "number"
-            ? { bullet: { type: "number" as const } }
-            : {}),
         });
         addImageAt(s, image, { x: imageX, y: top, w: 500, h: 400 });
         if (asText(d.caption)) {
