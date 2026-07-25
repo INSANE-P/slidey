@@ -87,8 +87,32 @@ export const PRESETS: Preset[] = [
         data: {
           title: "공통 요구사항",
           badge: "공통",
-          body: "QA 시트 작성\n실제 운영 중인 서비스 시연 준비",
+          body: "QA 시트 작성\n실제 운영 중인 서비스 시연 준비\nAPI 명세 작성",
           bullet: "dot",
+        },
+      },
+      // 요구사항 설명 — 특정 요구사항을 깊게 풀어줘요(원본 데모데이의 'API 명세' 흐름).
+      {
+        layout: "content",
+        data: {
+          title: "API 명세 작성",
+          badge: "요구사항 설명",
+          body: "요청·응답의 상세한 스펙을 문서로 남겨요.\n프론트·백엔드가 같은 기준으로 개발할 수 있어요.\n변경 이력을 추적하기 좋아요.",
+          bullet: "dot",
+        },
+      },
+      {
+        layout: "table",
+        data: {
+          title: "API 명세 도구 비교",
+          description: "무엇을 쓸지 팀에서 정해요.",
+          table: {
+            head: ["", "Notion", "Spring REST Docs", "Swagger"],
+            rows: [
+              ["장점", "쓰기 편리하다", "코드를 깔끔하게 유지", "러닝 커브가 낮다"],
+              ["단점", "관리 비용이 든다", "러닝 커브가 있다", "코드가 지저분해진다"],
+            ],
+          },
         },
       },
       {
@@ -103,9 +127,27 @@ export const PRESETS: Preset[] = [
       {
         layout: "content",
         data: {
+          title: "배포 자동화",
+          badge: "요구사항 설명",
+          body: "CI와 셸 스크립트로 배포 과정을 자동화해요.\n사람 실수를 줄이고 배포 속도를 높여요.\n누구나 같은 방식으로 배포할 수 있어요.",
+          bullet: "dot",
+        },
+      },
+      {
+        layout: "content",
+        data: {
           title: "프론트엔드 요구사항",
           badge: "프론트엔드",
           body: "핵심 기능 동작 확인(Unit Test)\n빌드·배포 환경 구분(dev·prod)\n웹 접근성 대응",
+          bullet: "dot",
+        },
+      },
+      {
+        layout: "content",
+        data: {
+          title: "웹 접근성 대응",
+          badge: "요구사항 설명",
+          body: "텍스트 대체·키보드 내비게이션을 제공해요.\n누구나 서비스를 동등하게 이용할 수 있어요.\nLighthouse 접근성 점수로 확인해요.",
           bullet: "dot",
         },
       },
