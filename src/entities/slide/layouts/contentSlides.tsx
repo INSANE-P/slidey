@@ -6,6 +6,30 @@ import { BodyLines, SlideImage, densityByCount } from "@/entities/slide/SlidePar
 
 export function Content({ data }: SlideProps) {
   const bullet = asText(data.bullet) || "none";
+  const image = asText(data.image);
+
+  // 사진을 넣으면 텍스트+사진 2단으로 바뀌어요. 사진이 없으면 텍스트만 담백하게.
+  if (image) {
+    const imageLeft = asText(data.imageSide) === "left";
+    return (
+      <WhiteSlide title={asText(data.title)} badge={asText(data.badge)}>
+        <div
+          className={`flex h-full items-center gap-[48px] ${imageLeft ? "flex-row-reverse" : ""}`}
+        >
+          <div className="flex-1">
+            <BodyLines value={data.body} bullet={bullet} size={30} gap={22} />
+          </div>
+          <div className="flex w-[500px] flex-none flex-col gap-[12px]">
+            <SlideImage src={image} className="h-[400px] w-full" />
+            {asText(data.caption) ? (
+              <p className="text-[18px] text-slide-muted">{asText(data.caption)}</p>
+            ) : null}
+          </div>
+        </div>
+      </WhiteSlide>
+    );
+  }
+
   // 줄이 적으면 크게, 많으면 담백하게. 적을 땐 세로로만 가운데로 모아요.
   const { size, gap, sparse } = densityByCount(asLines(data.body).length, [
     { upTo: 2, size: 46, gap: 32 },

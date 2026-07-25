@@ -158,12 +158,33 @@ export const LAYOUTS: LayoutDef[] = [
           { value: "number", label: "1. 번호" },
         ],
       },
+      {
+        key: "image",
+        label: "사진",
+        type: "image",
+        optional: true,
+        hint: "넣으면 텍스트 옆에 사진이 붙어요. 비우면 텍스트만 나와요.",
+      },
+      {
+        key: "imageSide",
+        label: "사진 위치",
+        type: "select",
+        optional: true,
+        options: [
+          { value: "right", label: "오른쪽" },
+          { value: "left", label: "왼쪽" },
+        ],
+      },
+      { key: "caption", label: "사진 설명", type: "text", optional: true },
     ],
     sample: {
       title: "그리디 소개",
       badge: "",
       body: "24년 8월 여름에 만들어졌습니다.\n교내 유일무이한 개발 동아리를 목표하고 있습니다.\n보고 배웠던 좋은 개발 문화를 공유하고 싶습니다.",
       bullet: "none",
+      image: "",
+      imageSide: "right",
+      caption: "",
     },
   },
   {

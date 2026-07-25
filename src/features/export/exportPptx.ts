@@ -1019,6 +1019,52 @@ function renderSlide(pptx: Pptx, slide: Slide, logo: string) {
       break;
     }
 
+    case "content": {
+      const badge = asText(d.badge);
+      whiteHeader(s, logo, title, badge);
+      const image = asText(d.image);
+      // 사진이 있으면 텍스트+사진 2단, 없으면 텍스트만
+      if (image) {
+        const top = badge ? 206 : 176;
+        const imageLeft = asText(d.imageSide) === "left";
+        const textX = imageLeft ? 48 + 500 + 48 : 48;
+        const imageX = imageLeft ? 48 : 1280 - PAD - 500;
+        s.addText(paragraphs(asLines(d.body)), {
+          x: inch(textX),
+          y: inch(top),
+          w: inch(1280 - 48 - PAD - 500 - 48),
+          h: inch(720 - top - 52),
+          fontFace: FACE,
+          fontSize: pt(30),
+          color: MUTED,
+          lineSpacingMultiple: 1.45,
+          paraSpaceAfter: 8,
+          valign: "middle",
+          margin: 0,
+          ...(asText(d.bullet) === "dot" ? { bullet: true } : {}),
+          ...(asText(d.bullet) === "number"
+            ? { bullet: { type: "number" as const } }
+            : {}),
+        });
+        addImageAt(s, image, { x: imageX, y: top, w: 500, h: 400 });
+        if (asText(d.caption)) {
+          s.addText(asText(d.caption), {
+            x: inch(imageX),
+            y: inch(top + 410),
+            w: inch(500),
+            h: inch(28),
+            fontFace: FACE,
+            fontSize: pt(18),
+            color: MUTED,
+            margin: 0,
+          });
+        }
+      } else {
+        bodyText(s, d.body, badge, asText(d.bullet) || "none");
+      }
+      break;
+    }
+
     default: {
       const badge = asText(d.badge);
       whiteHeader(s, logo, title, badge);
