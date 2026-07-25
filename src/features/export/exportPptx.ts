@@ -32,6 +32,75 @@ type PptxSlide = ReturnType<Pptx["addSlide"]>;
 const imageData = (src: string) =>
   src.startsWith("data:") ? src.slice("data:".length) : undefined;
 
+const isRemote = (s: string) => /^https?:\/\//i.test(s);
+
+/**
+ * 외부 URL 사진을 같은 출처 프록시로 받아 dataURL로 바꿔요.
+ * pptxgenjs는 브라우저에서 이미지를 직접 받는데, 다른 도메인 사진은 CORS에
+ * 막혀 내보내기 전체가 실패해요. 서버를 거치면 그 문제를 피할 수 있어요.
+ * 못 받은 사진은 빈 문자열로 둬서 자리(placeholder)만 남겨요.
+ */
+async function proxyToData(src: string): Promise<string> {
+  try {
+    const res = await fetch(`/api/img?url=${encodeURIComponent(src)}`);
+    if (!res.ok) return "";
+    const blob = await res.blob();
+    return await new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => resolve("");
+      reader.readAsDataURL(blob);
+    });
+  } catch {
+    return "";
+  }
+}
+
+/** 슬라이드에 쓰인 이미지 문자열을 모아요(제목용 사진과 항목별 사진 모두). */
+function collectImages(deck: Deck): string[] {
+  const urls = new Set<string>();
+  for (const slide of deck.slides) {
+    const one = asText(slide.data.image);
+    if (isRemote(one)) urls.add(one);
+    for (const item of asItems(slide.data.items)) {
+      if (typeof item.image === "string" && isRemote(item.image)) {
+        urls.add(item.image);
+      }
+    }
+  }
+  return [...urls];
+}
+
+/**
+ * 외부 URL 사진을 미리 dataURL로 바꾼 덱을 돌려줘요.
+ * 원본은 건드리지 않고, 바뀐 슬라이드만 얕게 복제해요.
+ */
+async function resolveImages(deck: Deck): Promise<Deck> {
+  const urls = collectImages(deck);
+  if (!urls.length) return deck;
+
+  const map = new Map<string, string>();
+  await Promise.all(urls.map(async (u) => map.set(u, await proxyToData(u))));
+  const swap = (s: string) => (map.has(s) ? map.get(s)! : s);
+
+  return {
+    ...deck,
+    slides: deck.slides.map((slide) => {
+      const data = { ...slide.data };
+      if (typeof data.image === "string") data.image = swap(data.image);
+      const items = asItems(data.items);
+      if (items.length) {
+        data.items = items.map((item) =>
+          typeof item.image === "string"
+            ? { ...item, image: swap(item.image) }
+            : item,
+        );
+      }
+      return { ...slide, data };
+    }),
+  };
+}
+
 function addImageAt(
   slide: PptxSlide,
   src: string,
@@ -1125,7 +1194,9 @@ export async function downloadPptx(deck: Deck) {
   pptx.title = deck.title;
 
   const logo = await loadAsData("/greedy-logo.png");
-  deck.slides.forEach((slide) => renderSlide(pptx as Pptx, slide, logo));
+  // 외부 URL 사진을 미리 받아 둬요. CORS로 내보내기가 통째로 실패하지 않게요.
+  const resolved = await resolveImages(deck);
+  resolved.slides.forEach((slide) => renderSlide(pptx as Pptx, slide, logo));
 
   await pptx.writeFile({ fileName: `${deck.title || "greedy-deck"}.pptx` });
 }
