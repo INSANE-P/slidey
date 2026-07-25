@@ -58,8 +58,12 @@ function addImageAt(
 
   const opts = {
     ...frame,
-    // 원본 비율이 달라도 상자를 꽉 채우도록 잘라요. 화면 object-cover와 같습니다.
-    sizing: { type: "cover" as const, w: frame.w, h: frame.h },
+    // 원형 아바타(round)는 꽉 채우고(cover), 사각형 사진 틀은 자르지 않게(contain).
+    sizing: {
+      type: round ? ("cover" as const) : ("contain" as const),
+      w: frame.w,
+      h: frame.h,
+    },
     ...(round ? { rounding: true } : {}),
   };
 

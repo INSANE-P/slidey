@@ -20,7 +20,7 @@ export function Content({ data }: SlideProps) {
             <BodyLines value={data.body} bullet={bullet} size={30} gap={22} />
           </div>
           <div className="flex w-[500px] flex-none flex-col gap-[12px]">
-            <SlideImage src={image} className="h-[400px] w-full" />
+            <SlideImage src={image} fit="contain" className="h-[400px] w-full" />
             {asText(data.caption) ? (
               <p className="text-[18px] text-slide-muted">{asText(data.caption)}</p>
             ) : null}
@@ -56,7 +56,7 @@ export function Split({ data }: SlideProps) {
           <BodyLines value={data.body} />
         </div>
         <div className="flex w-[500px] flex-none flex-col gap-[12px]">
-          <SlideImage src={asText(data.image)} className="h-[400px] w-full" />
+          <SlideImage src={asText(data.image)} fit="contain" className="h-[400px] w-full" />
           {asText(data.caption) ? (
             <p className="text-[18px] text-slide-muted">{asText(data.caption)}</p>
           ) : null}
@@ -75,6 +75,7 @@ export function ImageFull({ data }: SlideProps) {
         <SlideImage
           src={asText(data.image)}
           rounded=""
+          fit="contain"
           className="absolute inset-0 size-full"
         />
         {asText(data.caption) ? (
@@ -89,7 +90,7 @@ export function ImageFull({ data }: SlideProps) {
   return (
     <WhiteSlide title={title}>
       <div className="flex h-full flex-col gap-[12px]">
-        <SlideImage src={asText(data.image)} className="min-h-0 w-full flex-1" />
+        <SlideImage src={asText(data.image)} fit="contain" className="min-h-0 w-full flex-1" />
         {asText(data.caption) ? (
           <p className="text-[18px] text-slide-muted">{asText(data.caption)}</p>
         ) : null}

@@ -1,14 +1,20 @@
 import { asLines } from "@/entities/slide/types";
 
-/** 사진이 아직 없으면 자리만 잡아둬요. 인쇄·내보내기에서도 그대로 보입니다. */
+/**
+ * 사진이 아직 없으면 자리만 잡아둬요. 인쇄·내보내기에서도 그대로 보입니다.
+ * fit="contain"이면 자르지 않고 틀 안에 맞춰요(사각형 사진 틀).
+ * fit="cover"면 틀을 꽉 채워요(원형 아바타처럼 여백이 없어야 할 때).
+ */
 export function SlideImage({
   src,
   className = "",
   rounded = "rounded-[8px]",
+  fit = "cover",
 }: {
   src?: string;
   className?: string;
   rounded?: string;
+  fit?: "cover" | "contain";
 }) {
   if (!src) {
     return (
@@ -24,7 +30,7 @@ export function SlideImage({
     <img
       src={src}
       alt=""
-      className={`object-cover ${rounded} ${className}`}
+      className={`${fit === "contain" ? "object-contain" : "object-cover"} ${rounded} ${className}`}
       draggable={false}
     />
   );
